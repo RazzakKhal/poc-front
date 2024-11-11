@@ -15,10 +15,13 @@ import { HttpClientModule, provideHttpClient, withInterceptorsFromDi } from '@an
 export class ChatComponent implements OnInit {
   messages: Message[] = [];
   newMessageContent: string = '';
+  user! : string;
 
   constructor(private chatService: ChatService) {}
 
   ngOnInit(): void {
+    // this.user = this.determineUser();
+
     // Récupérer et afficher les messages existants
     this.chatService.getMessages().subscribe((msgs) => {
       this.messages = msgs;
@@ -36,10 +39,16 @@ export class ChatComponent implements OnInit {
       const newMessage: Message = {
         content: this.newMessageContent,
         sentAt: new Date().toISOString(),
-        sender: { id: 1, name: 'User1' } // Remplacez par les informations de l'utilisateur actuel
+        sender: localStorage.getItem('token') ? { id: 1, name:"razzak" } : {id : 2, name: "support"}// Remplacez par les informations de l'utilisateur actuel
       };
+      console.log(JSON.stringify(newMessage))
       this.chatService.sendMessage(newMessage);
       this.newMessageContent = ''; // Réinitialiser le champ d'entrée
     }
+
   }
+
+  // determineUser(){
+  //   return localStorage.getItem('user') ? 'utilisateur' : 'support';
+  // }
 }
