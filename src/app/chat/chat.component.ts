@@ -1,0 +1,45 @@
+import { Component, OnInit } from '@angular/core';
+import { ChatService } from '../services/chat.service';
+import { Message } from '../models/message.model';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+
+@Component({
+  selector: 'app-chat',
+  standalone: true,  // Déclaration du composant autonome
+  imports: [CommonModule, FormsModule],  // Importation de CommonModule et FormsModule
+  templateUrl: './chat.component.html',
+  styleUrls: ['./chat.component.css']
+})
+export class ChatComponent implements OnInit {
+  messages: Message[] = [];
+  newMessageContent: string = '';
+
+  constructor(private chatService: ChatService) {}
+
+  ngOnInit(): void {
+    // Récupérer et afficher les messages existants
+    this.chatService.getMessages().subscribe((msgs) => {
+      this.messages = msgs;
+    });
+
+    // Abonnement aux nouveaux messages en temps réel
+    this.chatService.onMessageReceived().subscribe((msg) => {
+      this.messages.push(msg); // Ajouter à la suite des messages
+    });
+  }
+
+  // Méthode pour envoyer un message
+  sendMessage(): void {
+    if (this.newMessageContent.trim()) {
+      const newMessage: Message = {
+        content: this.newMessageContent,
+        sentAt: new Date().toISOString(),
+        sender: { id: 1, name: 'User1' } // Remplacez par les informations de l'utilisateur actuel
+      };
+      this.chatService.sendMessage(newMessage);
+      this.newMessageContent = ''; // Réinitialiser le champ d'entrée
+    }
+  }
+}
