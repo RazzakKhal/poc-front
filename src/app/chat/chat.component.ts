@@ -20,7 +20,6 @@ export class ChatComponent implements OnInit {
   constructor(private chatService: ChatService) {}
 
   ngOnInit(): void {
-    // this.user = this.determineUser();
 
     // Récupérer et afficher les messages existants
     this.chatService.getMessages().subscribe((msgs) => {
@@ -48,7 +47,5 @@ export class ChatComponent implements OnInit {
 
   }
 
-  // determineUser(){
-  //   return localStorage.getItem('user') ? 'utilisateur' : 'support';
-  // }
+
 }
